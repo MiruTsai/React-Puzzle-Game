@@ -6,15 +6,14 @@ import Ranking from './components/ranking';
 import './style.css';
 const root = document.querySelector('.root');
 
-
-
 const Header = () => {
     return (
         <h1>React Puzzle Game</h1>
     )
 }
+
 const Block = (props) => {
-    function showNumber(){
+    function showNumber() {
         console.log(props.id)
     }
     return (
@@ -23,6 +22,7 @@ const Block = (props) => {
         </button>
     )
 }
+
 const NewGame = (props) => {
     return (
         <button className="new_game" onClick={() => props.again()}>New Game</button>
@@ -43,14 +43,7 @@ const NewGame = (props) => {
 class App extends React.Component {
     state = {
         correct: [1, 2, 3, 4, 5, 6, 7, 8, ''],
-        list: [1, 2, 3, 4, 5, 6, 7, 8, ''],
-        size: 3,
-        current:""
-    }
-    handleClick = (id) =>{
-        this.setState({
-            current:""
-        })
+        list: [1, 2, 3, 4, 5, 6, 7, 8, '']
     }
     newGame = () => {
         let newList = this.state.list;
@@ -63,41 +56,42 @@ class App extends React.Component {
             }
             return array;
         }
-
         this.setState({
             list: shuffleArray(newList)
         })
-        console.log(this.state.list)
-        console.log(this.state.list.indexOf(""))
+        console.log(this.state.list);
+        console.log(this.state.list.indexOf(""));
     }
-
+    // changeIndex = (e) => {
+    //     let list = this.state.list;
+    //     this.setState(
+    //         list.indexOf(e.target)=list.indexOf("")
+    //     )
+    // }
     render() {
         let game;
         game = this.state.list.map(number => {
             return (
                 <Block id={number}
                     key={Math.floor(Math.random() * 100000)}
-                    showNumber={this.handleClick}
+                    // changeIndex={this.changeIndex}
                 />
-
             )
         })
-
         return (
             <BrowserRouter>
-            <div className="playground">
-            <NavBar />
-            <Route exact path="/" render={()=><div><Header />
-                
-                <div className="board">
-                    {game}
+                <div className="playground">                
+                    <NavBar />
+                    <Route exact path="/" render={() => <div><Header />
+                        <div className="board">
+                            {game}
+                        </div>
+                        <NewGame again={this.newGame} /> </div>} />
+                    <Route path="/ranking" component={Ranking} />
                 </div>
-                <NewGame again={this.newGame} /> </div>}/>
-            <Route path="/ranking" component={Ranking} />
-                
-            </div>
             </BrowserRouter>
         )
     }
 }
+
 ReactDOM.render(<App />, root);
