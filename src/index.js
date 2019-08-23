@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
+import NavBar from './components/navbar';
+import Ranking from './components/ranking';
 import './style.css';
 const root = document.querySelector('.root');
 
@@ -11,40 +14,61 @@ const Header = () => {
     )
 }
 const Block = (props) => {
+    function showNumber(){
+        console.log(props.id)
+    }
     return (
-        <button className="block">
+        <button className="block" onClick={() => showNumber()}>
             <span className="number">{props.id}</span>
         </button>
     )
 }
 const NewGame = (props) => {
     return (
-        <button onClick={() => props.again}>New Game</button>
+        <button className="new_game" onClick={() => props.again()}>New Game</button>
     )
 }
+// class Board extends React.Component { 
+//     render(){
+//         console.log(this.props.list)
+//     return (
 
-class Board extends React.Component{
-    render(){
-        return(
-        <div className="row">
-            <Block />
-        </div> 
-        )   
-    }
-}
+//         this.props.list.map(number => {
+//             <Block id={number}
+//                 key={Math.floor(Math.random() * 100000)} />
+//         })
+//     )}
+// }
+
 class App extends React.Component {
     state = {
-        list: [1, 2, 3, 4, 5, 6, 7, 8],
-        size: 3
+        correct: [1, 2, 3, 4, 5, 6, 7, 8, ''],
+        list: [1, 2, 3, 4, 5, 6, 7, 8, ''],
+        size: 3,
+        current:""
     }
+    handleClick = (id) =>{
+        this.setState({
+            current:""
+        })
+    }
+    newGame = () => {
+        let newList = this.state.list;
+        function shuffleArray(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * i);
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
+        }
 
-    newGame = () =>{
-           let list =this.state.list.sort( function(x,y) {
-            if (x % 2 ==0) return 1;
-            if (x % 2 !=0) return -1;
-            });
-            return list;
-
+        this.setState({
+            list: shuffleArray(newList)
+        })
+        console.log(this.state.list)
+        console.log(this.state.list.indexOf(""))
     }
 
     render() {
@@ -52,18 +76,27 @@ class App extends React.Component {
         game = this.state.list.map(number => {
             return (
                 <Block id={number}
-                    key={Math.floor(Math.random() * 100)} />
+                    key={Math.floor(Math.random() * 100000)}
+                    showNumber={this.handleClick}
+                />
+
             )
         })
 
         return (
-            <div >
-                <Header />
+            <BrowserRouter>
+            <div className="playground">
+            <NavBar />
+            <Route exact path="/" render={()=><div><Header />
+                
                 <div className="board">
-                {game}
+                    {game}
                 </div>
-                <NewGame again={this.newGame} />
+                <NewGame again={this.newGame} /> </div>}/>
+            <Route path="/ranking" component={Ranking} />
+                
             </div>
+            </BrowserRouter>
         )
     }
 }
